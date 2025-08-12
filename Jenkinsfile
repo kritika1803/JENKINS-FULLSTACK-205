@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        PATH = "/usr/local/bin:${env.PATH}" // ensure npm & node are visible
+    }
+
     stages {
 
         // ===== FRONTEND BUILD =====
@@ -18,14 +22,8 @@ pipeline {
             steps {
                 sh '''
                 TOMCAT_WEBAPPS="/Users/chilakakritikareddy/Desktop/SOFTWARE/apache-tomcat-10.1.XX/webapps/reactstudentapi"
-
-                # Remove old frontend if exists
                 rm -rf "$TOMCAT_WEBAPPS"
-
-                # Create target directory
                 mkdir -p "$TOMCAT_WEBAPPS"
-
-                # Copy built frontend files
                 cp -R STUDENTAPI-REACT/dist/* "$TOMCAT_WEBAPPS"
                 '''
             }
@@ -45,12 +43,8 @@ pipeline {
             steps {
                 sh '''
                 TOMCAT_WEBAPPS="/Users/chilakakritikareddy/Desktop/SOFTWARE/apache-tomcat-10.1.XX/webapps"
-
-                # Remove old backend deployment
                 rm -f "$TOMCAT_WEBAPPS/springbootstudentapi.war"
                 rm -rf "$TOMCAT_WEBAPPS/springbootstudentapi"
-
-                # Copy new WAR file
                 cp STUDENTAPI-SPRINGBOOT/target/*.war "$TOMCAT_WEBAPPS/"
                 '''
             }
