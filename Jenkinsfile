@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        PATH = "/opt/homebrew/bin:/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home/bin:${PATH}"
-    }
-
     stages {
 
         // ===== FRONTEND BUILD =====
@@ -12,7 +8,6 @@ pipeline {
             steps {
                 dir('STUDENTAPI-REACT') {
                     sh '''
-                    export PATH=$PATH
                     npm install
                     npm run build
                     '''
@@ -24,7 +19,6 @@ pipeline {
         stage('Deploy Frontend to Tomcat') {
             steps {
                 sh '''
-                export PATH=$PATH
                 TOMCAT_WEBAPPS="/Users/chilakakritikareddy/Desktop/SOFTWARE/apache-tomcat-10.1.43/webapps"
 
                 rm -rf "$TOMCAT_WEBAPPS/reactstudentapi"
@@ -39,7 +33,6 @@ pipeline {
             steps {
                 dir('STUDENTAPI-SPRINGBOOT') {
                     sh '''
-                    export PATH=$PATH
                     mvn clean package
                     '''
                 }
@@ -50,7 +43,6 @@ pipeline {
         stage('Deploy Backend to Tomcat') {
             steps {
                 sh '''
-                export PATH=$PATH
                 TOMCAT_WEBAPPS="/Users/chilakakritikareddy/Desktop/SOFTWARE/apache-tomcat-10.1.43/webapps"
 
                 rm -f "$TOMCAT_WEBAPPS/springbootstudentapi.war"
