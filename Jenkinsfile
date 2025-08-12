@@ -1,10 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "NODEJS"   // Name from Jenkins NodeJS installation config
-        maven  "MAVEN"    // Name from Jenkins Maven installation config
-        jdk    "JAVA"     // Name from Jenkins JDK installation config
+    environment {
+        PATH = "/opt/homebrew/bin:/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home/bin:${PATH}"
     }
 
     stages {
@@ -13,8 +11,11 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('STUDENTAPI-REACT') {
-                    sh 'npm install'
-                    sh 'npm run build'
+                    sh '''
+                    export PATH=$PATH
+                    npm install
+                    npm run build
+                    '''
                 }
             }
         }
@@ -23,12 +24,12 @@ pipeline {
         stage('Deploy Frontend to Tomcat') {
             steps {
                 sh '''
+                export PATH=$PATH
                 TOMCAT_WEBAPPS="/Users/chilakakritikareddy/Desktop/SOFTWARE/apache-tomcat-10.1.43/webapps"
-                FRONTEND_BUILD="STUDENTAPI-REACT/dist"
 
                 rm -rf "$TOMCAT_WEBAPPS/reactstudentapi"
                 mkdir -p "$TOMCAT_WEBAPPS/reactstudentapi"
-                cp -R $FRONTEND_BUILD/* "$TOMCAT_WEBAPPS/reactstudentapi"
+                cp -R STUDENTAPI-REACT/dist/* "$TOMCAT_WEBAPPS/reactstudentapi"
                 '''
             }
         }
@@ -37,7 +38,10 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('STUDENTAPI-SPRINGBOOT') {
-                    sh 'mvn clean package'
+                    sh '''
+                    export PATH=$PATH
+                    mvn clean package
+                    '''
                 }
             }
         }
@@ -46,6 +50,7 @@ pipeline {
         stage('Deploy Backend to Tomcat') {
             steps {
                 sh '''
+                export PATH=$PATH
                 TOMCAT_WEBAPPS="/Users/chilakakritikareddy/Desktop/SOFTWARE/apache-tomcat-10.1.43/webapps"
 
                 rm -f "$TOMCAT_WEBAPPS/springbootstudentapi.war"
