@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NODEJS"   // Name from Jenkins NodeJS installation config
+        maven  "MAVEN"    // Name from Jenkins Maven installation config
+        jdk    "JAVA"     // Name from Jenkins JDK installation config
+    }
+
     stages {
 
         // ===== FRONTEND BUILD =====
